@@ -180,8 +180,29 @@ describe('UserSignupComponent', () => {
             const {queryByText} = setupForSubmit({actions});
             fireEvent.click(button);
 
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
             const spinner = queryByText('Loading...');
-            await waitForElementToBeRemoved(spinner);
+
+            expect(spinner).not.toBeInTheDocument();
+
+        });
+        it('should hide spinner after api call with error', async function () {
+            const actions = {
+                postSignup: jest.fn().mockImplementation(() => {
+                    return new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            reject({
+                                response: {data: {}}
+                            });
+                        }, 300);
+                    })
+                })
+            }
+            const {queryByText} = setupForSubmit({actions});
+            fireEvent.click(button);
+
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+            const spinner = queryByText('Loading...');
 
             expect(spinner).not.toBeInTheDocument();
 
@@ -189,3 +210,6 @@ describe('UserSignupComponent', () => {
 
     })
 })
+
+console.error = () => {
+}

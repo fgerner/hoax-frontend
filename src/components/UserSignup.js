@@ -30,11 +30,12 @@ export class UserSignup extends Component {
         }
         this.setState({pendingApiCall: true});
         this.props.actions.postSignup(user)
-            .then(response => {
+            .then((response) => {
                 this.setState({pendingApiCall: false});
             })
             .catch((error) => {
                 this.setState({ pendingApiCall: false });
+                console.log(error);
             });
     }
 
@@ -108,9 +109,12 @@ export class UserSignup extends Component {
 UserSignup.defaultProps = {
     actions: {
         postSignup: () => {
-            new Promise((resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 resolve({});
-            })
+            });
         }
     }
 }
+
+
+export default UserSignup;
