@@ -1,7 +1,7 @@
 import React from "react";
 import {UserSignup} from './UserSignup';
 import '@testing-library/jest-dom/extend-expect'
-import {fireEvent} from "@testing-library/react";
+import {fireEvent, waitForDomChange, waitForElementToBeRemoved} from "@testing-library/react";
 
 const {render} = require("@testing-library/react");
 
@@ -56,6 +56,16 @@ describe('UserSignupComponent', () => {
                 }
             };
         };
+
+        const mockAsyncDelayed = () => {
+            return jest.fn().mockImplementation(() => {
+                return new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                        resolve({});
+                    }, 300);
+                })
+            })
+        }
 
         let button, displayNameInput, usernameInput, passwordInput, passwordRepeatInput
 
@@ -140,6 +150,41 @@ describe('UserSignupComponent', () => {
                 password: 'my-password'
             }
             expect(actions.postSignup).toHaveBeenCalledWith(expectedUserObject);
+        });
+        it('should not allow user to click the signup button during ongoing api call', function () {
+            const actions = {
+                postSignup: mockAsyncDelayed()
+            }
+
+            setupForSubmit({actions});
+
+            fireEvent.click(button);
+            fireEvent.click(button);
+            expect(actions.postSignup).toHaveBeenCalledTimes(1);
+
+        });
+        it('should display spinner during ongoing api call', function () {
+            const actions = {
+                postSignup: mockAsyncDelayed()
+            }
+            const {queryByText} = setupForSubmit({actions});
+            fireEvent.click(button);
+            const spinner = queryByText('Loading...');
+            expect(spinner).toBeInTheDocument();
+
+        });
+        it('should hide spinner after successful api call', async function () {
+            const actions = {
+                postSignup: mockAsyncDelayed()
+            }
+            const {queryByText} = setupForSubmit({actions});
+            fireEvent.click(button);
+
+            const spinner = queryByText('Loading...');
+            await waitForElementToBeRemoved(spinner);
+
+            expect(spinner).not.toBeInTheDocument();
+
         });
 
     })

@@ -5,7 +5,8 @@ export class UserSignup extends Component {
         displayName: '',
         username: '',
         password: '',
-        passwordRepeat: ''
+        passwordRepeat: '',
+        pendingApiCall: false
     }
 
     onChangeDisplayName = (event) => {
@@ -27,7 +28,14 @@ export class UserSignup extends Component {
             displayName: this.state.displayName,
             password: this.state.password
         }
-        this.props.actions.postSignup(user);
+        this.setState({pendingApiCall: true});
+        this.props.actions.postSignup(user)
+            .then(response => {
+                this.setState({pendingApiCall: false});
+            })
+            .catch((error) => {
+                this.setState({ pendingApiCall: false });
+            });
     }
 
     render() {
@@ -50,7 +58,7 @@ export class UserSignup extends Component {
                     <label htmlFor="username">Username</label>
                     <input
                         className={'form-control'}
-                        id={'user-name'}
+                        id={'username'}
                         type="text"
                         placeholder={'Your username'}
                         value={this.state.username}
@@ -80,7 +88,17 @@ export class UserSignup extends Component {
                     />
                 </div>
                 <div className={'text-center'}>
-                    <button className={'btn btn-primary'} onClick={this.onClickSignup}>Sign up</button>
+                    <button
+                        disabled={this.state.pendingApiCall}
+                        className={'btn btn-primary'}
+                        onClick={this.onClickSignup}
+                    >
+                        {this.state.pendingApiCall && (
+                            <div className="spinner-border text-light spinner-border-sm mr-sm-1" role="status">
+                                <span className="visually-hidden">Loading...</span>
+                            </div>)}
+                        Sign up
+                    </button>
                 </div>
             </div>
         )
