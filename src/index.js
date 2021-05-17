@@ -4,6 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {UserSignup} from "./components/UserSignup";
 import * as apiCalls from './api/apiCalls';
+import Login from "./components/Login";
 
 const actions = {
     postSignup: apiCalls.signup
@@ -11,6 +12,7 @@ const actions = {
 
 ReactDOM.render(
   <React.StrictMode>
+      <Login/>
     <UserSignup actions={actions} />
   </React.StrictMode>,
   document.getElementById('root')
