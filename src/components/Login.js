@@ -1,11 +1,13 @@
 import {Component} from "react";
 import Input from "./Input";
+import ButtonWithProgress from "./ButtonWithProgress";
 
 export class Login extends Component {
     state = {
         username: '',
         password: '',
-        apiError: undefined
+        apiError: undefined,
+        pendingApiCall: false
     }
 
     onChangeUsername = (event) => {
@@ -28,11 +30,18 @@ export class Login extends Component {
             username: this.state.username,
             password: this.state.password
         }
+        this.setState({pendingApiCall: true})
         this.props.actions
             .postLogin(body)
+            .then((response) => {
+                this.setState({pendingApiCall: false})
+            })
             .catch(error => {
                 if (error.response){
-                    this.setState({apiError: error.response.data.message})
+                    this.setState({
+                        apiError: error.response.data.message,
+                        pendingApiCall: false
+                    })
                 }
             });
     }
@@ -72,13 +81,12 @@ export class Login extends Component {
                     )
                 }
                 <div className={'text-center'}>
-                    <button
-                        className="btn btn-primary"
+                    <ButtonWithProgress
                         onClick={this.onClickLogin}
-                        disabled={disableSubmit}
-                    >
-                        Login
-                    </button>
+                        disabled={disableSubmit || this.state.pendingApiCall}
+                        text={'Login'}
+                        pendingApiCall={this.state.pendingApiCall}
+                    />
                 </div>
             </div>
         )
