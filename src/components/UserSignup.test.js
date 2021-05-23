@@ -305,6 +305,19 @@ describe('UserSignupComponent', () => {
             const errormessage = await queryByText('Password cannot be null');
             expect(errormessage).not.toBeInTheDocument();
         });
+        it('routes to home page after successful signup', async function () {
+            const actions = {
+                postSignup: jest.fn().mockResolvedValue({})
+            }
+            const history = {
+                push: jest.fn()
+            }
+            const {queryByText} = setupForSubmit({actions, history});
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
+
+            expect(history.push).toHaveBeenCalledWith('/');
+        });
 
     })
 })

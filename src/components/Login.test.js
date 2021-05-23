@@ -217,7 +217,19 @@ describe('Login', () => {
 
             expect(spinner).not.toBeInTheDocument();
         });
+        it('routes to home page after successful login', async function () {
+            const actions = {
+                postLogin: jest.fn().mockResolvedValue({})
+            }
+            const history = {
+                push: jest.fn()
+            }
+            const {queryByText} = setupForSubmit({actions, history});
+            fireEvent.click(button);
+            await waitForElementToBeRemoved(() => queryByText('Loading...'));
 
+            expect(history.push).toHaveBeenCalledWith('/');
+        });
     })
 })
 console.error = () => {}

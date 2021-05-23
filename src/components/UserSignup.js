@@ -31,7 +31,7 @@ export class UserSignup extends Component {
         const errors = {...this.state.errors};
         delete errors.password;
         errors.passwordRepeat = passwordRepeatConfirmed ? '' : 'Does not match to password';
-        this.setState({password:value, passwordRepeatConfirmed, errors });
+        this.setState({password: value, passwordRepeatConfirmed, errors});
     }
     onChangePasswordRepeat = (event) => {
         const value = event.target.value;
@@ -50,7 +50,9 @@ export class UserSignup extends Component {
         this.setState({pendingApiCall: true});
         this.props.actions.postSignup(user)
             .then((response) => {
-                this.setState({pendingApiCall: false});
+                this.setState({pendingApiCall: false}, () => {
+                    this.props.history.push('/');
+                });
             })
             .catch((apiError) => {
                 let errors = {...this.state.errors}
@@ -131,6 +133,9 @@ UserSignup.defaultProps = {
                 resolve({});
             });
         }
+    },
+    history: {
+        push: () => {}
     }
 }
 
