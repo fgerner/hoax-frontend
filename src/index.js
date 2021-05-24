@@ -4,15 +4,18 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import {HashRouter} from 'react-router-dom';
 import App from "./containers/App";
+import {Provider} from "react-redux";
+import {createStore} from "redux";
+import authReducer from "./redux/authReducer";
 
-// const actions = {
-//     postLogin: apiCalls.login
-// }
+const store = createStore(authReducer);
 
 ReactDOM.render(
-    <HashRouter>
-        <App/>
-    </HashRouter>
+    <Provider store={store}>
+        <HashRouter>
+            <App/>
+        </HashRouter>
+    </Provider>
     , document.getElementById('root')
 );
 

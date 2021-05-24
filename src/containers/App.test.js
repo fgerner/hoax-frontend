@@ -1,12 +1,18 @@
 import {fireEvent, render} from "@testing-library/react";
 import {MemoryRouter} from 'react-router-dom';
 import App from "./App";
+import {createStore} from "redux";
+import authReducer from "../redux/authReducer";
+import {Provider} from "react-redux";
 
 const setup = (path) => {
+    const store = createStore(authReducer);
     return render(
-        <MemoryRouter initialEntries={[path]}>
-            <App/>
-        </MemoryRouter>
+        <Provider store={store}>
+            <MemoryRouter initialEntries={[path]}>
+                <App/>
+            </MemoryRouter>
+        </Provider>
     )
 }
 
@@ -60,14 +66,14 @@ describe('App container', function () {
         const header = container.querySelector('h1');
         expect(header).toHaveTextContent('Sign Up');
     });
-it('should display login component when clicking on login', function () {
+    it('should display login component when clicking on login', function () {
         const {queryByText, container} = setup('/');
         const loginLink = queryByText('Login');
         fireEvent.click(loginLink);
         const header = container.querySelector('h1');
         expect(header).toHaveTextContent('Login');
     });
-it('should display home component when clicking on logo', function () {
+    it('should display home component when clicking on logo', function () {
         const {queryByTestId, container} = setup('/login');
         const logo = container.querySelector('img');
         fireEvent.click(logo);
