@@ -1,4 +1,4 @@
-import {render} from "@testing-library/react";
+import {fireEvent, render} from "@testing-library/react";
 import TopBar from "./TopBar";
 import {MemoryRouter} from "react-router-dom";
 import {createStore} from "redux";
@@ -56,15 +56,24 @@ describe('TopBar component', () => {
             const loginLink = queryByText('Login');
             expect(loginLink.getAttribute('href')).toBe('/login');
         });
-        it('should link to logout when user is loggedin', function () {
+        it('should link to logout when user is logged in', function () {
             const {queryByText} = setup(loggedInState);
             const logoutLink = queryByText('Logout');
             expect(logoutLink).toBeInTheDocument()
         });
-        it('should link to user profile when user is loggedin', function () {
+        it('should link to user profile when user is logged in', function () {
             const {queryByText} = setup(loggedInState);
             const profileLink = queryByText('My Profile');
             expect(profileLink.getAttribute('href')).toBe('/user1');
         });
     });
+    describe('interactions', ()=>{
+        it('should display login and signup links when user is logged out', function () {
+            const {queryByText} = setup(loggedInState);
+            const logoutLink = queryByText('Logout');
+            fireEvent.click(logoutLink);
+            const loginLink = queryByText('Login');
+            expect(loginLink).toBeInTheDocument()
+        });
+    })
 })
