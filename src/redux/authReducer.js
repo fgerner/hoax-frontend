@@ -4,7 +4,7 @@ const initialState = {
     displayName: '',
     image: '',
     password: '',
-    isLogedIn: false
+    isLoggedIn: false
 }
 
 export default function authReducer(state = initialState, action) {
@@ -13,7 +13,7 @@ export default function authReducer(state = initialState, action) {
     }else if (action.type === 'login-success'){
         return {
             ...action.payload,
-            isLogedIn: true
+            isLoggedIn: true
         }
     }
     return state;
