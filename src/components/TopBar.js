@@ -3,7 +3,7 @@ import logo from '../assets/hoaxify-logo.png'
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 
-class TopBar extends Component {
+export class TopBar extends Component {
     onClickLogout = () => {
         const action = {
             type: 'logout-success'
